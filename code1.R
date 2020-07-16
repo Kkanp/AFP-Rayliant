@@ -1,4 +1,5 @@
 setwd("/Users/kanp/AFP - Rayliant/Data")
+
 require(data.table)
 require(ggplot2)
 require(directlabels)
@@ -57,4 +58,7 @@ data = data[valid==1]
 # intersect(dt1,dt5)
 # intersect(dt1,dt3)
 # intersect(dt3,dt5)
+
+##
+
 
