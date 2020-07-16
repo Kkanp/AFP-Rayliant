@@ -48,7 +48,7 @@ data[(dup==TRUE)&(no_of_exch==1), valid:=seq(1,.N,1), by=.(comp,date)] #duplicat
 data[(dup==TRUE)&(no_of_exch>1)&(main_exch==TRUE), valid:=(exch %in% exchange[c(1,2,7)]), by=.(comp,date)] #duplicates with main exchange > use main exchange
 data[(dup==TRUE)&(no_of_exch>1)&(main_exch==FALSE), valid:=seq(1,.N,1), by=.(comp,date)] #duplicates without main exchange > use only one
 data[(dup==FALSE), valid:=1]
-data = data[valid==1]
+data = data[valid==1]; data$dup = data$no_of_exch = data$main_exch = data$valid = NULL
 
 # # check
 # dt1 = unique(data[exch==exchange[1],]$comp) #SSE-HK SB
