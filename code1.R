@@ -127,7 +127,7 @@ GICS_sector = data.table(Code = seq(10,60,5),
                                     'Communication Services','Utilities','Real Estate'))
 GICS_ind = data.table(Code = c('1010','1510','2010','2020','2030','2510','2520','2530','2550','3010','3020','3030','3510','3520',
                                '4010','4020','4030','4510','4520','4530','5010','5020','5510','6010'),
-                      Industry = c('Energy','Materials','Capital Goods','Commercial & Professional Services',
+                      Industry_Group = c('Energy','Materials','Capital Goods','Commercial & Professional Services',
                                    'Transportation','Automobiles & Components','Consumers Durables & Apparel',
                                    'Consumer Services','Retailing','Food & Staples Retailing','Food, Beverage & Tobacco',
                                    'Household & Personal Products','Health Care Equipment & Services',
@@ -135,7 +135,7 @@ GICS_ind = data.table(Code = c('1010','1510','2010','2020','2030','2510','2520',
                                    'Insurance','Software & Services','Technology Hardware & Equipment',
                                    'Semiconductors & Semiconductor Equipment','Communication Services',
                                    'Media & Entertainment','Utilities','Real Estate'))
-
+#write.xlsx(GICS_ind, 'GICS_ind.xlsx')
 
 # NAICS_ind = data.table(Code = c(11,21,22,23,31,42,44,48,51,52,53,54,55,56,61,62,71,72,81,92),
 #                        Industry = c('Agriculture, Forestry, Fishing and Hunting',
@@ -158,7 +158,7 @@ GICS_ind = data.table(Code = c('1010','1510','2010','2020','2030','2510','2520',
 #                                   'Services','Public Administration'))
 
 IO_ind = data.table(IO_Code = c('11','21','22','23','31G','42','44RT','48TW','51','FIRE','PROF','6','7','81','G'),
-                    Industry = c('Agriculture, forestry, fishing, and hunting',
+                    IO_Industry = c('Agriculture, forestry, fishing, and hunting',
                                  'Mining','Utilities','Construction','Manufacturing',
                                  'Wholesale trade','Retail trade','Transportation and warehousing',
                                  'Information','Finance, insurance, real estate, rental, and leasing',
@@ -174,17 +174,19 @@ IO_ind = data.table(IO_Code = c('11','21','22','23','31G','42','44RT','48TW','51
                                   '2540,4510,5010','4010,4020,4030,4040,2550,2010',
                                   '2530,2020,3520,2530,2010,4020',
                                   '2530,3510','2530','2530','2030'))
+require(openxlsx)
+write.xlsx(IO_ind, 'IO_ind.xlsx')
 
 io = as.data.table(read.csv('sector-level.csv', stringsAsFactors = F, skip = 5))
 io_coef = as.matrix(io[1:15,3:17])
-coef_median = apply(io_coef, 1, quantile, probs = 0.8) #median by row (find median of strength with customer)
+coef_top2 = apply(io_coef, 1, quantile, probs = 0.8) #top2 by row (find top2 of strength with customer)
 require(hash)
 link_code = hash()
 link_coef = hash()
 for (i in 1:15) {
   customerlist = coeflist = list()
   for (j in 1:15) {
-    if (io_coef[i,j]>coef_median[i] && io_coef[i,j]!=max(io_coef[i,])) {
+    if (io_coef[i,j]>coef_top2[i] && io_coef[i,j]!=max(io_coef[i,])) {
       customerlist = append(customerlist, io$IOCode[j])
       coeflist = append(coeflist, round(io_coef[i,j],4))
     }
